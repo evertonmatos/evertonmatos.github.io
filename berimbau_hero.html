@@ -91,11 +91,43 @@
             background: rgba(234, 179, 8, 0.5);
             border-radius: 8px;
         }
+        /* Botão Fullscreen */
+        #btn-fullscreen {
+          position: fixed;
+          top: 15px;
+          right: 15px;
+          z-index: 999;
+          background: rgba(0, 0, 0, 0.3);
+          border: 1px solid rgba(234, 179, 8, 0.35);
+          border-radius: 50%;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+        #btn-fullscreen:hover {
+          background: rgba(0, 0, 0, 0.5);
+        }
+        #btn-fullscreen svg {
+          width: 22px;
+          height: 22px;
+          fill: #eab308;
+        }
     </style>
 </head>
 <body class="flex flex-col h-full w-full select-none">
 
     <div id="app" class="relative w-full h-full flex flex-col justify-between overflow-hidden">
+
+        <!-- Botão de Fullscreen -->
+        <button id="btn-fullscreen" title="Alternar Tela Cheia">
+            <svg viewBox="0 0 24 24">
+                <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+            </svg>
+        </button>
         
         <!-- HUD Superior -->
         <header id="hud" class="z-20 p-3 pt-4 flex justify-between items-center glass-panel rounded-b-2xl mx-2 mt-1 shadow-lg">
@@ -253,6 +285,24 @@
     </div>
 
     <script>
+        // Gerenciamento do Modo Tela Cheia (Fullscreen)
+        document.getElementById("btn-fullscreen").addEventListener("click", (e) => {
+          e.stopPropagation();
+          if (!document.fullscreenElement) {
+            if (document.documentElement.requestFullscreen) {
+              document.documentElement.requestFullscreen();
+            } else if (document.documentElement.webkitRequestFullscreen) {
+              document.documentElement.webkitRequestFullscreen();
+            }
+          } else {
+            if (document.exitFullscreen) {
+              document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+            }
+          }
+        });
+
         class BerimbauSynth {
             constructor() {
                 this.ctx = null;
