@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Menu Principal - Cordel Verde</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-color: #080d09;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            color: #fff;
+        }
+        .glass-panel {
+            background: rgba(12, 24, 15, 0.92);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(234, 179, 8, 0.35);
+        }
+        .capoeira-title {
+            text-shadow: 0 0 15px rgba(234, 179, 8, 0.8), 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen p-4">
+
+    <div class="w-full max-w-md glass-panel p-6 sm:p-8 rounded-3xl shadow-2xl flex flex-col items-center text-center">
+        <!-- Cabeçalho -->
+        <div class="inline-block px-3 py-1 bg-yellow-900/60 text-yellow-300 rounded-full text-xs font-bold tracking-widest uppercase mb-3 border border-yellow-500/30">
+            <i class="fas fa-leaf mr-1.5"></i> PROJETO CORDEL VERDE
+        </div>
+        
+        <h1 class="text-3xl sm:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-yellow-300 to-yellow-500 capoeira-title mb-2">
+            MENU PRINCIPAL
+        </h1>
+        <p class="text-emerald-200/80 text-xs sm:text-sm mb-8">
+            Selecione a ferramenta de treino ou jogo para iniciar:
+        </p>
+
+        <!-- Botões de Navegação -->
+        <div class="w-full space-y-4">
+            <a href="movimentos-cordel-verde.html" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-emerald-800 text-white font-black text-base tracking-wider uppercase shadow-lg hover:opacity-95 active:scale-98 transition transform flex items-center justify-center gap-3 border border-emerald-400/50">
+                <i class="fas fa-person-running text-xl"></i> Movimentos Cordel Verde
+            </a>
+
+            <a href="berimbau_hero.html" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-yellow-600 to-amber-700 text-stone-950 font-black text-base tracking-wider uppercase shadow-lg hover:opacity-95 active:scale-98 transition transform flex items-center justify-center gap-3 border border-yellow-400/50">
+                <i class="fas fa-drum text-xl"></i> Berimbau Hero
+            </a>
+        </div>
+
+        <!-- Rodapé -->
+        <div class="mt-8 text-[10px] text-stone-400 uppercase tracking-widest">
+            Capoeira &bull; Tradição &bull; Tecnologia
+        </div>
+    </div>
+
+</body>
+</html>
