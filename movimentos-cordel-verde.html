@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Movimentos Cordel Verde</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      height: 100vh;
+      height: 100dvh;
+      margin: 0;
+      padding: 10px 10px 15px 10px;
+      box-sizing: border-box;
+      user-select: none;
+      cursor: pointer;
+      background-color: #f4f4f9;
+      touch-action: pan-x pan-y;
+      overflow: hidden;
+    }
+    
+    /* Botão Fullscreen */
+    #btn-fullscreen {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      z-index: 999;
+      background: rgba(0, 0, 0, 0.1);
+      border: none;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s ease;
+    }
+    #btn-fullscreen:hover {
+      background: rgba(0, 0, 0, 0.2);
+    }
+    #btn-fullscreen svg {
+      width: 24px;
+      height: 24px;
+      fill: #333;
+    }
+
+    #conteudo-principal {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      flex-grow: 1;
+      width: 100%;
+      min-height: 0;
+    }
+
+    #previo {
+      font-size: 500%;
+      font-weight: bold;
+      color: #888;
+      text-align: center;
+      min-height: 1rem;
+      margin-bottom: 5px;
+      transition: font-size 0.05s ease-out;
+    }
+    #resultado {
+      font-size: 1000%;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      padding: 5px;
+      transition: font-size 0.05s ease-out;
+    }
+    #barras-container {
+      width: 80%;
+      max-width: 500px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 5px;
+      flex-shrink: 0;
+    }
+    .bar-wrapper {
+      width: 100%;
+      height: 18px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+    }
+    #time-bar {
+      width: 100%;
+      height: 100%;
+      background-color: #2ed573;
+      transition: width 0.1s linear, background-color 0.1s linear;
+      border-radius: 10px;
+    }
+    #ciclo-bar {
+      width: 100%;
+      height: 100%;
+      background-color: #70a1ff;
+      transition: width 0.3s ease;
+      border-radius: 10px;
+    }
+
+    /* Modal customizado para entrada de intervalo e modo */
+    #modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-box {
+      background: #fff;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      max-width: 320px;
+      width: 80%;
+    }
+    .modal-box h3 {
+      margin-top: 0;
+      color: #333;
+    }
+    .modal-box input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1.2rem;
+      box-sizing: border-box;
+      margin-bottom: 15px;
+      text-align: center;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    .modal-botoes-modo {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+    .modal-box button {
+      flex: 1;
+      padding: 12px 10px;
+      font-size: 1rem;
+      font-weight: bold;
+      color: white;
+      background-color: #2ed573;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* Botao de fim de ciclo */
+    #acoes-ciclo {
+      display: none;
+      margin-top: 20px;
+    }
+    .btn-acao {
+      padding: 16px 48px;
+      font-size: 2rem;
+      font-weight: bold;
+      color: white;
+      background-color: #2ed573;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .btn-acao:active {
+      transform: scale(0.98);
+    }
+
+    /* Ajustes específicos para Modo Paisagem / Telas Baixas */
+    @media (max-height: 500px) {
+      body {
+        padding: 5px;
+      }
+      #previo {
+        font-size: 3.5rem;
+        min-height: 0.6rem;
+        margin-bottom: 2px;
+      }
+      #resultado {
+        font-size: 4.8rem;
+        padding: 5px;
+      }
+      #barras-container {
+        gap: 6px;
+        margin-bottom: 5px;
+      }
+      .bar-wrapper {
+        height: 12px;
+      }
+      #btn-fullscreen {
+        top: 8px;
+        right: 8px;
+        width: 36px;
+        height: 36px;
+      }
+      #btn-fullscreen svg {
+        width: 18px;
+        height: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Botão de Fullscreen -->
+  <button id="btn-fullscreen" title="Alternar Tela Cheia">
+    <svg viewBox="0 0 24 24">
+      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+    </svg>
+  </button>
+
+  <!-- Modal para entrada de intervalo e seleção de modo -->
+  <div id="modal-overlay">
+    <div class="modal-box">
+      <h3>Configuração</h3>
+      <p>Digite o intervalo em segundos:</p>
+      <input type="number" id="input-intervalo" value="10" min="1">
+      <p>Selecione o modo de treino:</p>
+      <div class="modal-botoes-modo">
+        <button id="btn-modo-treino">TREINO</button>
+        <button id="btn-modo-aleatorio">ALEATÓRIO</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="conteudo-principal">
+    <div id="previo"></div>
+    <div id="resultado">CLIQUE PARA INICIAR</div>
+
+    <div id="acoes-ciclo">
+      <button id="btn-mais-um" class="btn-acao">+1</button>
+    </div>
+  </div>
+
+  <div id="barras-container" style="visibility: hidden;">
+    <div class="bar-wrapper">
+      <div id="time-bar"></div>
+    </div>
+    <div class="bar-wrapper" id="ciclo-bar-wrapper">
+      <div id="ciclo-bar"></div>
+    </div>
+  </div>
+
+  <script>
+    // Lista original totalmente em MAIÚSCULO sem acentos no AU
+    const palavrasOriginais = ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL", "PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA", "MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA", "RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO", "AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"];
+
+    // Pilha de palavras disponíveis para o ciclo sem repetição
+    let palavrasDisponiveis = [...palavrasOriginais];
+
+    let intervaloSegundos = 10;
+    let tempoRestante = 10;
+    let temporizador = null;
+    let timerVoz = null;
+    let timerInicio = null;
+    let timerLongPress = null;
+    let foiLongPress = false;
+    let ultimoSegundoBipado = -1;
+    let palavraAtual = "";
+
+    // Modos de reprodução: "TREINO" (1 ciclo e botão +1) ou "ALEATORIO" (infinito sem repetição seguida)
+    let modoExecucao = "TREINO";
+
+    // Inicialização do contexto do Web Audio API
+    let audioCtx = null;
+
+    function obterContextoAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    // Cancela rigorosamente qualquer temporizador, agendamento de áudio ou fala em andamento
+    function pararLimparTudo() {
+      if (temporizador !== null) {
+        clearInterval(temporizador);
+        temporizador = null;
+      }
+      if (timerVoz !== null) {
+        clearTimeout(timerVoz);
+        timerVoz = null;
+      }
+      if (timerInicio !== null) {
+        clearTimeout(timerInicio);
+        timerInicio = null;
+      }
+      if (timerLongPress !== null) {
+        clearTimeout(timerLongPress);
+        timerLongPress = null;
+      }
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+      }
+    }
+
+    function tocarBipe(freq) {
+      obterContextoAudio();
+      if (!audioCtx) return;
+
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.15);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.15);
+    }
+
+    function tocarSineta() {
+      obterContextoAudio();
+      if (!audioCtx) return;
+
+      const toques = [0, 0.12, 0.24];
+      
+      toques.forEach((delay) => {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc1.type = 'sine';
+        osc1.frequency.setValueAtTime(1200, audioCtx.currentTime + delay);
+        
+        osc2.type = 'triangle';
+        osc2.frequency.setValueAtTime(2400, audioCtx.currentTime + delay);
+
+        gain.gain.setValueAtTime(0.15, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.18);
+
+        osc1.connect(gain);
+        osc2.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc1.start(audioCtx.currentTime + delay);
+        osc2.start(audioCtx.currentTime + delay);
+        osc1.stop(audioCtx.currentTime + delay + 0.18);
+        osc2.stop(audioCtx.currentTime + delay + 0.18);
+      });
+    }
+
+    // Toca 3 sons agudos ao finalizar o ciclo
+    function tocarSomFimCiclo() {
+      obterContextoAudio();
+      if (!audioCtx) return;
+
+      const toques = [0, 0.18, 0.36];
+      toques.forEach((delay) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(1800, audioCtx.currentTime + delay);
+
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime + delay);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + delay + 0.15);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(audioCtx.currentTime + delay);
+        osc.stop(audioCtx.currentTime + delay + 0.15);
+      });
+    }
+
+    function iniciarContador() {
+      pararLimparTudo();
+      tempoRestante = intervaloSegundos;
+      ultimoSegundoBipado = -1;
+      atualizarBarras();
+      
+      temporizador = setInterval(tick, 100);
+    }
+
+    function lerTexto(texto) {
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+
+        // Mapeamentos específicos para ajuste fino de pronúncia no TTS
+        let textoParaVoz = texto
+          .replace(/\bAU COM UMA MÃO\b/g, "AÚ COM MAMÃO")
+          .replace(/\bMEIA\b/g, "MÊIA")
+          .replace(/\bAU FECHADO\b/g, "AÚ FECHADO")
+          .replace(/\bAU CANIVETE\b/g, "AÚ CANIVETE")
+          .replace(/\bAU\b/g, "AÚ");
+
+        const mensagem = new SpeechSynthesisUtterance(textoParaVoz);
+        mensagem.lang = 'pt-BR';
+        mensagem.rate = 1.0;
+
+        // O contador só recomeça a regredir após o término da fala
+        mensagem.onend = () => {
+          iniciarContador();
+        };
+
+        mensagem.onerror = () => {
+          iniciarContador();
+        };
+
+        window.speechSynthesis.speak(mensagem);
+      } else {
+        iniciarContador();
+      }
+    }
+
+    function atualizarBarras() {
+      // Barra de tempo (individual do movimento)
+      const proporcaoTempo = Math.max(tempoRestante / intervaloSegundos, 0);
+      const porcentagemTempo = proporcaoTempo * 100;
+      const hue = proporcaoTempo * 120;
+      
+      const timeBar = document.getElementById("time-bar");
+      timeBar.style.width = porcentagemTempo + "%";
+      timeBar.style.backgroundColor = `hsl(${hue}, 80%, 45%)`;
+
+      // Barra do ciclo (com +1 na contagem para manter 1 gomo extra até o último item)
+      if (modoExecucao === "TREINO") {
+        const totalPalavras = palavrasOriginais.length + 1;
+        const restantes = palavrasDisponiveis.length + 1;
+        const porcentagemCiclo = (restantes / totalPalavras) * 100;
+        document.getElementById("ciclo-bar").style.width = porcentagemCiclo + "%";
+      }
+    }
+
+    function exibirBotoesFimCiclo() {
+      pararLimparTudo();
+
+      // Esconde tudo e exibe apenas o botão +1
+      document.getElementById("previo").innerText = "";
+      document.getElementById("resultado").innerText = "";
+      document.getElementById("barras-container").style.visibility = "hidden";
+      document.getElementById("acoes-ciclo").style.display = "block";
+    }
+
+    function voltarTelaInicial() {
+      pararLimparTudo();
+      palavraAtual = "";
+      palavrasDisponiveis = [...palavrasOriginais];
+
+      document.getElementById("previo").innerText = "";
+      document.getElementById("resultado").innerText = "CLIQUE PARA INICIAR";
+      document.getElementById("barras-container").style.visibility = "hidden";
+      document.getElementById("acoes-ciclo").style.display = "none";
+      document.getElementById("modal-overlay").style.display = "flex";
+    }
+
+    function sortear() {
+      pararLimparTudo();
+
+      let sorteada = "";
+
+      if (modoExecucao === "TREINO") {
+        // Se a pilha de palavras esvaziou no modo Treino
+        if (palavrasDisponiveis.length === 0) {
+          tocarSomFimCiclo();
+          exibirBotoesFimCiclo();
+          return;
+        } else {
+          tocarSineta();
+        }
+
+        // Sorteia sem repetição dentro do ciclo
+        const indiceSorteado = Math.floor(Math.random() * palavrasDisponiveis.length);
+        sorteada = palavrasDisponiveis.splice(indiceSorteado, 1)[0];
+      } else {
+        // Modo ALEATÓRIO: roda indefinidamente sem repetir o mesmo valor 2x seguidas
+        tocarSineta();
+        let opcoesDisponiveis = palavrasOriginais.filter(p => p !== palavraAtual);
+        const indiceSorteado = Math.floor(Math.random() * opcoesDisponiveis.length);
+        sorteada = opcoesDisponiveis[indiceSorteado];
+      }
+
+      document.getElementById("barras-container").style.visibility = "visible";
+      document.getElementById("acoes-ciclo").style.display = "none";
+
+      if (palavraAtual !== "") {
+        document.getElementById("previo").innerText = palavraAtual;
+      }
+
+      palavraAtual = sorteada;
+
+      document.getElementById("resultado").innerText = sorteada;
+
+      // Deixa a barra de progresso cheia (100%) durante o tempo de espera do som/voz
+      tempoRestante = intervaloSegundos;
+      atualizarBarras();
+
+      // Delay de 0,3 segundos (300 ms) antes de acionar a voz
+      timerVoz = setTimeout(() => {
+        lerTexto(sorteada);
+      }, 300);
+    }
+
+    function tick() {
+      tempoRestante -= 0.1;
+
+      if (tempoRestante <= 0) {
+        sortear();
+      } else {
+        const segundoAtual = Math.ceil(tempoRestante);
+        
+        if (segundoAtual !== ultimoSegundoBipado && segundoAtual < intervaloSegundos) {
+          ultimoSegundoBipado = segundoAtual;
+
+          const passosTotais = Math.max(intervaloSegundos - 1, 1);
+          const passoAtual = intervaloSegundos - segundoAtual;
+          const progresso = Math.min(passoAtual / passosTotais, 1.0);
+          
+          const frequencia = 220 + (progresso * 660);
+          tocarBipe(frequencia);
+        }
+
+        atualizarBarras();
+      }
+    }
+
+    // Gerenciamento do Modo Tela Cheia (Fullscreen)
+    document.getElementById("btn-fullscreen").addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (!document.fullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen();
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+      }
+    });
+
+    // Ação Botão +1
+    document.getElementById("btn-mais-um").addEventListener("click", (e) => {
+      e.stopPropagation();
+      pararLimparTudo();
+      palavrasDisponiveis = [...palavrasOriginais];
+
+      document.getElementById("acoes-ciclo").style.display = "none";
+      document.getElementById("resultado").innerText = "INICIANDO";
+      document.getElementById("previo").innerText = "";
+
+      timerInicio = setTimeout(() => {
+        sortear();
+      }, 2000);
+    });
+
+    // Iniciar no modo TREINO
+    document.getElementById("btn-modo-treino").addEventListener("click", (e) => {
+      e.stopPropagation();
+      modoExecucao = "TREINO";
+      document.getElementById("ciclo-bar-wrapper").style.display = "block";
+      iniciarModoEcolhido();
+    });
+
+    // Iniciar no modo ALEATÓRIO
+    document.getElementById("btn-modo-aleatorio").addEventListener("click", (e) => {
+      e.stopPropagation();
+      modoExecucao = "ALEATORIO";
+      document.getElementById("ciclo-bar-wrapper").style.display = "none";
+      iniciarModoEcolhido();
+    });
+
+    function iniciarModoEcolhido() {
+      pararLimparTudo();
+      const val = parseInt(document.getElementById("input-intervalo").value, 10);
+      intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
+      
+      palavrasDisponiveis = [...palavrasOriginais];
+      palavraAtual = "";
+
+      document.getElementById("modal-overlay").style.display = "none";
+      obterContextoAudio();
+
+      document.getElementById("resultado").innerText = "INICIANDO";
+      document.getElementById("previo").innerText = "";
+
+      timerInicio = setTimeout(() => {
+        sortear();
+      }, 2000);
+    }
+
+    // Suporte ao gesto de pinça (pinch-to-zoom) e toque longo (>3s)
+    let distanciaInicialPinça = 0;
+    let tamanhoResultadoInicial = 0;
+    let tamanhoPrevioInicial = 0;
+    let foiGestoPinca = false;
+
+    function obterDistanciaToques(touches) {
+      const dx = touches[0].clientX - touches[1].clientX;
+      const dy = touches[0].clientY - touches[1].clientY;
+      return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    document.body.addEventListener("touchstart", (e) => {
+      if (e.touches.length === 1) {
+        foiLongPress = false;
+        if (timerLongPress !== null) {
+          clearTimeout(timerLongPress);
+        }
+        timerLongPress = setTimeout(() => {
+          foiLongPress = true;
+          voltarTelaInicial();
+        }, 3000);
+      } else if (e.touches.length === 2) {
+        if (timerLongPress !== null) {
+          clearTimeout(timerLongPress);
+          timerLongPress = null;
+        }
+        foiGestoPinca = true;
+        distanciaInicialPinça = obterDistanciaToques(e.touches);
+        
+        const elemResultado = document.getElementById("resultado");
+        const elemPrevio = document.getElementById("previo");
+
+        tamanhoResultadoInicial = parseFloat(window.getComputedStyle(elemResultado).fontSize);
+        tamanhoPrevioInicial = parseFloat(window.getComputedStyle(elemPrevio).fontSize);
+      }
+    }, { passive: false });
+
+    document.body.addEventListener("touchmove", (e) => {
+      if (e.touches.length > 1 && timerLongPress !== null) {
+        clearTimeout(timerLongPress);
+        timerLongPress = null;
+      }
+      if (e.touches.length === 2 && distanciaInicialPinça > 0) {
+        e.preventDefault();
+        const distanciaAtual = obterDistanciaToques(e.touches);
+        const fatorEscala = distanciaAtual / distanciaInicialPinça;
+        
+        // Aplicação proporcional do mesmo fator de escala para ambos os elementos
+        const novoTamanhoResultado = Math.min(Math.max(tamanhoResultadoInicial * fatorEscala, 24), 192);
+        const novoTamanhoPrevio = Math.min(Math.max(tamanhoPrevioInicial * fatorEscala, 12), 96);
+
+        document.getElementById("resultado").style.fontSize = `${novoTamanhoResultado}px`;
+        document.getElementById("previo").style.fontSize = `${novoTamanhoPrevio}px`;
+      }
+    }, { passive: false });
+
+    document.body.addEventListener("touchend", (e) => {
+      if (timerLongPress !== null) {
+        clearTimeout(timerLongPress);
+        timerLongPress = null;
+      }
+      if (e.touches.length < 2) {
+        distanciaInicialPinça = 0;
+        // Evita disparar a troca de palavra se o gesto foi uma pinça
+        if (foiGestoPinca) {
+          setTimeout(() => { foiGestoPinca = false; }, 300);
+        }
+      }
+    });
+
+    document.body.addEventListener("touchcancel", () => {
+      if (timerLongPress !== null) {
+        clearTimeout(timerLongPress);
+        timerLongPress = null;
+      }
+    });
+
+    // Clique manual na tela
+    document.body.addEventListener("click", () => {
+      if (foiGestoPinca) return;
+      if (foiLongPress) {
+        foiLongPress = false;
+        return;
+      }
+      if (document.getElementById("modal-overlay").style.display !== "none") return;
+      if (document.getElementById("acoes-ciclo").style.display === "block") return;
+      
+      pararLimparTudo();
+      obterContextoAudio();
+      sortear();
+    });
+  </script>
+
+</body>
+</html>
