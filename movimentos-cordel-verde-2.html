@@ -32,6 +32,7 @@
       color: var(--text-main);
       touch-action: pan-x pan-y;
       overflow: hidden;
+      -webkit-tap-highlight-color: transparent;
     }
 
     /* Controles Fixos no Topo Direito */
@@ -855,10 +856,14 @@
       if (timerLongPress !== null) { clearTimeout(timerLongPress); timerLongPress = null; }
     });
 
-    document.body.addEventListener("click", () => {
+    document.body.addEventListener("click", (e) => {
       if (foiGestoPinca || foiLongPress) return;
       if (document.getElementById("modal-overlay").style.display !== "none") return;
       if (document.getElementById("acoes-ciclo").style.display === "block") return;
+
+      // Evita avançar caso o clique tenha ocorrido em um botão ou controle
+      if (e.target.closest('button') || e.target.closest('.botoes-topo')) return;
+
       pararLimparTudo();
       obterContextoAudio();
       sortear();
