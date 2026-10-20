@@ -11,6 +11,7 @@
       --primary: #00b894;
       --primary-hover: #55efc4;
       --accent: #70a1ff;
+      --accent-hover: #91b5ff;
       --text-main: #f1f2f6;
       --text-muted: #a4b0be;
     }
@@ -168,7 +169,7 @@
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid rgba(255, 255, 255, 0.08);
       text-align: center;
-      max-width: 340px;
+      max-width: 380px;
       width: 100%;
       box-sizing: border-box;
     }
@@ -180,14 +181,14 @@
     }
     .modal-box p {
       color: var(--text-muted);
-      font-size: 0.9rem;
-      margin-bottom: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 4px;
       text-align: left;
     }
     .modal-box input[type="number"] {
       width: 100%;
-      padding: 10px;
-      font-size: 1rem;
+      padding: 8px;
+      font-size: 0.95rem;
       box-sizing: border-box;
       margin-bottom: 12px;
       text-align: center;
@@ -197,57 +198,56 @@
       border-radius: 8px;
     }
 
-    /* Botões de Categoria Estilizados */
-    .categorias-grid {
+    /* Lista de Modos com Botão Compacto Infinity (∞) */
+    .menu-lista-modos {
       display: flex;
       flex-direction: column;
+      gap: 7px;
+    }
+    .linha-modo {
+      display: flex;
       gap: 6px;
-      margin-bottom: 10px;
-      text-align: left;
-    }
-    .btn-categoria {
+      align-items: center;
       width: 100%;
+    }
+    .btn-modo-principal {
+      flex: 1;
       padding: 10px;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-main);
-      background: rgba(0,0,0,0.25);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      border-radius: 6px;
-      cursor: pointer;
-      text-transform: uppercase;
-      transition: all 0.2s;
-    }
-    .btn-categoria:hover {
-      background: rgba(255,255,255,0.1);
-      border-color: var(--accent);
-    }
-
-    .modal-botoes-modo {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-    .modal-box button {
-      width: 100%;
-      padding: 11px;
-      font-size: 0.95rem;
+      font-size: 0.82rem;
       font-weight: 700;
       color: #12141c;
       background-color: var(--primary);
       border: none;
-      border-radius: 8px;
+      border-radius: 6px;
       cursor: pointer;
+      text-transform: uppercase;
       transition: transform 0.1s, background-color 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .modal-box button:active {
+    .btn-modo-principal:active {
       transform: scale(0.98);
     }
-    .modal-box button.btn-secundario {
+    .btn-modo-infinito {
+      width: 42px;
+      height: 36px;
+      flex-shrink: 0;
+      font-size: 1.3rem;
+      font-weight: 800;
+      line-height: 1;
+      color: #12141c;
       background-color: var(--accent);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s, background-color 0.2s;
     }
-    .modal-box button.btn-terciario {
-      background-color: #f39c12;
+    .btn-modo-infinito:active {
+      transform: scale(0.95);
     }
 
     /* Botao de fim de ciclo */
@@ -295,24 +295,26 @@
         height: 10px;
       }
       .modal-box {
-        padding: 12px;
-        max-width: 320px;
+        padding: 10px;
+        max-width: 360px;
       }
       .modal-box h3 {
-        font-size: 1.1rem;
-        margin-bottom: 8px;
+        font-size: 1rem;
+        margin-bottom: 6px;
       }
       .modal-box input[type="number"] {
-        padding: 6px;
-        margin-bottom: 8px;
-      }
-      .modal-box button {
-        padding: 8px;
+        padding: 4px;
+        margin-bottom: 6px;
         font-size: 0.85rem;
       }
-      .btn-categoria {
+      .btn-modo-principal {
         padding: 6px;
-        font-size: 0.75rem;
+        font-size: 0.72rem;
+      }
+      .btn-modo-infinito {
+        width: 34px;
+        height: 28px;
+        font-size: 1.1rem;
       }
       .btn-topo {
         width: 34px;
@@ -356,26 +358,8 @@
       <p>Intervalo em segundos:</p>
       <input type="number" id="input-intervalo" value="10" min="1">
 
-      <!-- Visão Inicial do Menu com apenas 3 botões -->
-      <div id="menu-principal-botoes" class="modal-botoes-modo">
-        <button id="btn-modo-treino">SIMULADO CORDEL VERDE</button>
-        <button id="btn-modo-aleatorio" class="btn-secundario">MODO ALEATÓRIO (Infinito)</button>
-        <button id="btn-menu-categorias" class="btn-terciario">CATEGORIAS</button>
-      </div>
-
-      <!-- Visão Secundária para Seleção de Categorias como Botões -->
-      <div id="menu-categorias-secao" style="display: none;">
-        <p>Escolha a Categoria (Modo Finito / Ciclo):</p>
-        <div class="categorias-grid" id="categorias-finitas-container">
-          <!-- Preenchido via JavaScript -->
-        </div>
-        <p>Ou Modo Infinito por Categoria:</p>
-        <div class="categorias-grid" id="categorias-infinitas-container">
-          <!-- Preenchido via JavaScript -->
-        </div>
-        <div class="modal-botoes-modo" style="margin-top: 8px;">
-          <button id="btn-voltar-menu" class="btn-secundario">VOLTAR</button>
-        </div>
+      <div class="menu-lista-modos" id="menu-modos-container">
+        <!-- Preenchido via JavaScript -->
       </div>
     </div>
   </div>
@@ -402,11 +386,11 @@
   <script>
     // Dicionário de Categorias estruturado com base na apostila
     const categoriasBase = {
-      "Esquivas": ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL"],
-      "Movimentos Frontais": ["PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA"],
-      "Movimentos Laterais": ["MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA"],
-      "Movimentos de Giro": ["RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO"],
-      "Acrobacias": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"]
+      "ESQUIVAS": ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL"],
+      "MOVIMENTOS FRONTAIS": ["PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA"],
+      "MOVIMENTOS LATERAIS": ["MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA"],
+      "MOVIMENTOS DE GIRO": ["RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO"],
+      "ACROBACIAS": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"]
     };
 
     // Mapeia cada movimento para a sua categoria correspondente
@@ -430,44 +414,51 @@
     let ultimoSegundoBipado = -1;
     let palavraAtual = "";
 
-    // Modos: "TREINO", "ALEATORIO", "CATEGORIA_FINITA", "CATEGORIA_INFINITA"
-    let modoExecucao = "TREINO";
+    // Modos: "NORMAL", "INFINITO"
+    let modoExecucao = "NORMAL";
     let categoriaSelecionada = [];
     let audioCtx = null;
 
-    // Renderiza os botões de categorias no modal de configuração
-    function renderizarCategoriasModal() {
-      const containerFinito = document.getElementById("categorias-finitas-container");
-      const containerInfinito = document.getElementById("categorias-infinitas-container");
+    // Renderiza o menu compacto com botão principal e botão ícone ∞ ao lado
+    function renderizarMenuCompacto() {
+      const container = document.getElementById("menu-modos-container");
+      container.innerHTML = "";
 
-      containerFinito.innerHTML = "";
-      containerInfinito.innerHTML = "";
+      const listaOpcoes = [
+        { rotulo: "CORDEL VERDE", chaveCat: null },
+        ...Object.keys(categoriasBase).map(cat => ({ rotulo: cat, chaveCat: cat }))
+      ];
 
-      Object.keys(categoriasBase).forEach((cat) => {
-        // Botão para Modo Finito/Ciclo da Categoria
-        const btnFinito = document.createElement("button");
-        btnFinito.className = "btn-categoria";
-        btnFinito.innerText = cat;
-        btnFinito.addEventListener("click", (e) => {
+      listaOpcoes.forEach(item => {
+        const linha = document.createElement("div");
+        linha.className = "linha-modo";
+
+        // Botão Principal (Modo Normal / Finito)
+        const btnPrincipal = document.createElement("button");
+        btnPrincipal.className = "btn-modo-principal";
+        btnPrincipal.innerText = item.rotulo;
+        btnPrincipal.title = `Treino Normal (Ciclo) - ${item.rotulo}`;
+        btnPrincipal.addEventListener("click", (e) => {
           e.stopPropagation();
-          iniciarModoCategoria(cat, false);
+          iniciarTreino("NORMAL", item.chaveCat);
         });
-        containerFinito.appendChild(btnFinito);
 
-        // Botão para Modo Infinito da Categoria
+        // Botão Menor Ícone Infinito (Modo Infinito / Sem Repetição Seguidade)
         const btnInfinito = document.createElement("button");
-        btnInfinito.className = "btn-categoria btn-secundario";
-        btnInfinito.style.backgroundColor = "rgba(112, 161, 255, 0.2)";
-        btnInfinito.style.borderColor = "var(--accent)";
-        btnInfinito.innerText = `${cat} (Infinito)`;
+        btnInfinito.className = "btn-modo-infinito";
+        btnInfinito.innerText = "∞";
+        btnInfinito.title = `Modo Infinito - ${item.rotulo}`;
         btnInfinito.addEventListener("click", (e) => {
           e.stopPropagation();
-          iniciarModoCategoria(cat, true);
+          iniciarTreino("INFINITO", item.chaveCat);
         });
-        containerInfinito.appendChild(btnInfinito);
+
+        linha.appendChild(btnPrincipal);
+        linha.appendChild(btnInfinito);
+        container.appendChild(linha);
       });
     }
-    renderizarCategoriasModal();
+    renderizarMenuCompacto();
 
     function obterContextoAudio() {
       if (!audioCtx) {
@@ -567,7 +558,7 @@
         const mensagem = new SpeechSynthesisUtterance(textoParaVoz);
         mensagem.lang = 'pt-BR';
         mensagem.rate = 1.0;
-
+        
         mensagem.onend = () => {
           iniciarContador();
         };
@@ -586,14 +577,13 @@
       const proporcaoTempo = Math.max(tempoRestante / intervaloSegundos, 0);
       const porcentagemTempo = proporcaoTempo * 100;
       const hue = proporcaoTempo * 120;
-
+      
       const timeBar = document.getElementById("time-bar");
       timeBar.style.width = porcentagemTempo + "%";
       timeBar.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
 
-      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA_FINITA") {
-        const baseTotal = (modoExecucao === "TREINO") ? palavrasOriginais : categoriaSelecionada;
-        const totalPalavras = baseTotal.length + 1;
+      if (modoExecucao === "NORMAL") {
+        const totalPalavras = categoriaSelecionada.length + 1;
         const restantes = palavrasDisponiveis.length + 1;
         const porcentagemCiclo = (restantes / totalPalavras) * 100;
         document.getElementById("ciclo-bar").style.width = porcentagemCiclo + "%";
@@ -610,10 +600,6 @@
       document.getElementById("categoria-atual-display").innerText = "";
       document.getElementById("barras-container").style.visibility = "hidden";
       document.getElementById("acoes-ciclo").style.display = "none";
-
-      // Reseta visualização do modal para o menu principal
-      document.getElementById("menu-principal-botoes").style.display = "flex";
-      document.getElementById("menu-categorias-secao").style.display = "none";
       document.getElementById("modal-overlay").style.display = "flex";
     }
 
@@ -621,7 +607,7 @@
       pararLimparTudo();
       let sorteada = "";
 
-      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA_FINITA") {
+      if (modoExecucao === "NORMAL") {
         if (palavrasDisponiveis.length === 0) {
           tocarSomFimCiclo();
           voltarTelaInicial();
@@ -631,14 +617,9 @@
         }
         const indiceSorteado = Math.floor(Math.random() * palavrasDisponiveis.length);
         sorteada = palavrasDisponiveis.splice(indiceSorteado, 1)[0];
-      } else if (modoExecucao === "CATEGORIA_INFINITA") {
-        tocarSineta();
-        let opcoesDisponiveis = categoriaSelecionada.filter(p => p !== palavraAtual);
-        const indiceSorteado = Math.floor(Math.random() * opcoesDisponiveis.length);
-        sorteada = opcoesDisponiveis[indiceSorteado];
       } else {
         tocarSineta();
-        let opcoesDisponiveis = palavrasOriginais.filter(p => p !== palavraAtual);
+        let opcoesDisponiveis = categoriaSelecionada.filter(p => p !== palavraAtual);
         const indiceSorteado = Math.floor(Math.random() * opcoesDisponiveis.length);
         sorteada = opcoesDisponiveis[indiceSorteado];
       }
@@ -657,7 +638,6 @@
       tempoRestante = intervaloSegundos;
       atualizarBarras();
 
-      // Chamada direta e imediata da voz para garantir funcionamento no Android
       lerTexto(sorteada);
     }
 
@@ -730,11 +710,7 @@
     document.getElementById("btn-mais-um").addEventListener("click", (e) => {
       e.stopPropagation();
       pararLimparTudo();
-      if (modoExecucao === "CATEGORIA_FINITA") {
-        palavrasDisponiveis = [...categoriaSelecionada];
-      } else {
-        palavrasDisponiveis = [...palavrasOriginais];
-      }
+      palavrasDisponiveis = [...categoriaSelecionada];
       document.getElementById("acoes-ciclo").style.display = "none";
       document.getElementById("resultado").innerText = "INICIANDO";
       document.getElementById("previo").innerText = "";
@@ -742,59 +718,24 @@
       timerInicio = setTimeout(() => { sortear(); }, 2000);
     });
 
-    // Navegação do Modal de Categorias
-    document.getElementById("btn-menu-categorias").addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.getElementById("menu-principal-botoes").style.display = "none";
-      document.getElementById("menu-categorias-secao").style.display = "block";
-    });
-
-    document.getElementById("btn-voltar-menu").addEventListener("click", (e) => {
-      e.stopPropagation();
-      document.getElementById("menu-categorias-secao").style.display = "none";
-      document.getElementById("menu-principal-botoes").style.display = "flex";
-    });
-
-    // Configuração de Modos no Modal
-    function configurarEIniciar(modo) {
+    // Inicia a execução do treino conforme o tipo selecionado
+    function iniciarTreino(tipoModo, nomeCategoria) {
       pararLimparTudo();
-      modoExecucao = modo;
+      modoExecucao = tipoModo;
       const val = parseInt(document.getElementById("input-intervalo").value, 10);
       intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
 
-      if (modo === "TREINO") {
-        palavrasDisponiveis = [...palavrasOriginais];
-        document.getElementById("ciclo-bar-wrapper").style.display = "block";
+      if (nomeCategoria && categoriasBase[nomeCategoria]) {
+        categoriaSelecionada = [...categoriasBase[nomeCategoria]];
       } else {
-        document.getElementById("ciclo-bar-wrapper").style.display = "none";
+        categoriaSelecionada = [...palavrasOriginais];
       }
 
-      palavraAtual = "";
-      document.getElementById("modal-overlay").style.display = "none";
-      obterContextoAudio();
-
-      document.getElementById("resultado").innerText = "INICIANDO";
-      document.getElementById("previo").innerText = "";
-      document.getElementById("categoria-atual-display").innerText = "";
-
-      timerInicio = setTimeout(() => { sortear(); }, 2000);
-    }
-
-    function iniciarModoCategoria(nomeCategoria, infinito) {
-      pararLimparTudo();
-      const val = parseInt(document.getElementById("input-intervalo").value, 10);
-      intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
-
-      categoriaSelecionada = categoriasBase[nomeCategoria] || [];
-      if (categoriaSelecionada.length === 0) return;
-
-      if (infinito) {
-        modoExecucao = "CATEGORIA_INFINITA";
-        document.getElementById("ciclo-bar-wrapper").style.display = "none";
-      } else {
-        modoExecucao = "CATEGORIA_FINITA";
+      if (modoExecucao === "NORMAL") {
         palavrasDisponiveis = [...categoriaSelecionada];
         document.getElementById("ciclo-bar-wrapper").style.display = "block";
+      } else {
+        document.getElementById("ciclo-bar-wrapper").style.display = "none";
       }
 
       palavraAtual = "";
@@ -807,9 +748,6 @@
 
       timerInicio = setTimeout(() => { sortear(); }, 2000);
     }
-
-    document.getElementById("btn-modo-treino").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("TREINO"); });
-    document.getElementById("btn-modo-aleatorio").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("ALEATORIO"); });
 
     // Gestos de toque longo (voltar ao menu) e Pinça (zoom)
     let distanciaInicialPinça = 0;
@@ -866,9 +804,9 @@
       if (foiGestoPinca || foiLongPress) return;
       if (document.getElementById("modal-overlay").style.display !== "none") return;
       if (document.getElementById("acoes-ciclo").style.display === "block") return;
-
+      
       if (e.target.closest('button') || e.target.closest('.botoes-topo')) return;
-
+      
       pararLimparTudo();
       obterContextoAudio();
       sortear();
