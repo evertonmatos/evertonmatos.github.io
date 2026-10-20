@@ -196,35 +196,30 @@
       border-radius: 8px;
     }
 
-    /* Seleção de Categorias Estilizada */
+    /* Botões de Categoria Estilizados */
     .categorias-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 5px;
-      margin-bottom: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 10px;
       text-align: left;
     }
-    .categoria-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(0,0,0,0.15);
-      padding: 7px 10px;
-      border-radius: 6px;
+    .btn-categoria {
+      width: 100%;
+      padding: 10px;
       font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-main);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
       cursor: pointer;
-      color: var(--text-muted);
-      border: 1px solid transparent;
+      text-transform: uppercase;
       transition: all 0.2s;
     }
-    .categoria-item input {
-      width: auto;
-      margin: 0;
-      cursor: pointer;
-    }
-    .categoria-item:hover {
-      background: rgba(255,255,255,0.05);
-      color: var(--text-main);
+    .btn-categoria:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: var(--accent);
     }
 
     .modal-botoes-modo {
@@ -314,9 +309,9 @@
         padding: 8px;
         font-size: 0.85rem;
       }
-      .categoria-item {
-        padding: 5px 8px;
-        font-size: 0.8rem;
+      .btn-categoria {
+        padding: 6px;
+        font-size: 0.75rem;
       }
       .btn-topo {
         width: 34px;
@@ -367,14 +362,17 @@
         <button id="btn-menu-categorias" class="btn-terciario">CATEGORIAS</button>
       </div>
 
-      <!-- Visão Secundária para Seleção de Categorias -->
+      <!-- Visão Secundária para Seleção de Categorias como Botões -->
       <div id="menu-categorias-secao" style="display: none;">
-        <p>Selecione as Categorias:</p>
-        <div class="categorias-grid" id="categorias-container">
+        <p>Escolha a Categoria (Modo Finito / Ciclo):</p>
+        <div class="categorias-grid" id="categorias-finitas-container">
           <!-- Preenchido via JavaScript -->
         </div>
-        <div class="modal-botoes-modo">
-          <button id="btn-iniciar-categorias">INICIAR</button>
+        <p>Ou Modo Infinito por Categoria:</p>
+        <div class="categorias-grid" id="categorias-infinitas-container">
+          <!-- Preenchido via JavaScript -->
+        </div>
+        <div class="modal-botoes-modo" style="margin-top: 8px;">
           <button id="btn-voltar-menu" class="btn-secundario">VOLTAR</button>
         </div>
       </div>
@@ -431,22 +429,41 @@
     let ultimoSegundoBipado = -1;
     let palavraAtual = "";
 
-    // Modos: "TREINO", "ALEATORIO", "CATEGORIA"
+    // Modos: "TREINO", "ALEATORIO", "CATEGORIA_FINITA", "CATEGORIA_INFINITA"
     let modoExecucao = "TREINO";
+    let categoriaSelecionada = [];
     let audioCtx = null;
 
-    // Renderiza as opções de categorias no modal de configuração
+    // Renderiza os botões de categorias no modal de configuração
     function renderizarCategoriasModal() {
-      const container = document.getElementById("categorias-container");
-      container.innerHTML = "";
+      const containerFinito = document.getElementById("categorias-finitas-container");
+      const containerInfinito = document.getElementById("categorias-infinitas-container");
+
+      containerFinito.innerHTML = "";
+      containerInfinito.innerHTML = "";
+
       Object.keys(categoriasBase).forEach((cat) => {
-        const label = document.createElement("label");
-        label.className = "categoria-item";
-        label.innerHTML = `
-          <input type="checkbox" name="cat-filtro" value="${cat}" checked>
-          <span>${cat}</span>
-        `;
-        container.appendChild(label);
+        // Botão para Modo Finito/Ciclo da Categoria
+        const btnFinito = document.createElement("button");
+        btnFinito.className = "btn-categoria";
+        btnFinito.innerText = cat;
+        btnFinito.addEventListener("click", (e) => {
+          e.stopPropagation();
+          iniciarModoCategoria(cat, false);
+        });
+        containerFinito.appendChild(btnFinito);
+
+        // Botão para Modo Infinito da Categoria
+        const btnInfinito = document.createElement("button");
+        btnInfinito.className = "btn-categoria btn-secundario";
+        btnInfinito.style.backgroundColor = "rgba(112, 161, 255, 0.2)";
+        btnInfinito.style.borderColor = "var(--accent)";
+        btnInfinito.innerText = `${cat} (Infinito)`;
+        btnInfinito.addEventListener("click", (e) => {
+          e.stopPropagation();
+          iniciarModoCategoria(cat, true);
+        });
+        containerInfinito.appendChild(btnInfinito);
       });
     }
     renderizarCategoriasModal();
@@ -466,6 +483,9 @@
       if (timerInicio !== null) { clearTimeout(timerInicio); timerInicio = null; }
       if (timerLongPress !== null) { clearTimeout(timerLongPress); timerLongPress = null; }
       if ('speechSynthesis' in window) { window.speechSynthesis.cancel(); }
+      if (audioCtx && audioCtx.state === 'running') {
+        audioCtx.suspend();
+      }
     }
 
     function tocarBipe(freq) {
@@ -563,8 +583,9 @@
       timeBar.style.width = porcentagemTempo + "%";
       timeBar.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
 
-      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA") {
-        const totalPalavras = palavrasOriginais.length + 1;
+      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA_FINITA") {
+        const baseTotal = (modoExecucao === "TREINO") ? palavrasOriginais : categoriaSelecionada;
+        const totalPalavras = baseTotal.length + 1;
         const restantes = palavrasDisponiveis.length + 1;
         const porcentagemCiclo = (restantes / totalPalavras) * 100;
         document.getElementById("ciclo-bar").style.width = porcentagemCiclo + "%";
@@ -592,7 +613,7 @@
       pararLimparTudo();
       let sorteada = "";
 
-      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA") {
+      if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA_FINITA") {
         if (palavrasDisponiveis.length === 0) {
           tocarSomFimCiclo();
           voltarTelaInicial();
@@ -602,6 +623,11 @@
         }
         const indiceSorteado = Math.floor(Math.random() * palavrasDisponiveis.length);
         sorteada = palavrasDisponiveis.splice(indiceSorteado, 1)[0];
+      } else if (modoExecucao === "CATEGORIA_INFINITA") {
+        tocarSineta();
+        let opcoesDisponiveis = categoriaSelecionada.filter(p => p !== palavraAtual);
+        const indiceSorteado = Math.floor(Math.random() * opcoesDisponiveis.length);
+        sorteada = opcoesDisponiveis[indiceSorteado];
       } else {
         tocarSineta();
         let opcoesDisponiveis = palavrasOriginais.filter(p => p !== palavraAtual);
@@ -646,6 +672,17 @@
       }
     }
 
+    // Pausa qualquer som e timer ao minimizar, trocar de aba ou sair da página
+    window.addEventListener("blur", () => {
+      pararLimparTudo();
+    });
+
+    document.addEventListener("visibilitychange", () => {
+      if (document.hidden) {
+        pararLimparTudo();
+      }
+    });
+
     // Botão Home fixo
     document.getElementById("btn-home").addEventListener("click", (e) => {
       e.stopPropagation();
@@ -686,7 +723,11 @@
     document.getElementById("btn-mais-um").addEventListener("click", (e) => {
       e.stopPropagation();
       pararLimparTudo();
-      palavrasDisponiveis = [...palavrasOriginais];
+      if (modoExecucao === "CATEGORIA_FINITA") {
+        palavrasDisponiveis = [...categoriaSelecionada];
+      } else {
+        palavrasDisponiveis = [...palavrasOriginais];
+      }
       document.getElementById("acoes-ciclo").style.display = "none";
       document.getElementById("resultado").innerText = "INICIANDO";
       document.getElementById("previo").innerText = "";
@@ -714,21 +755,7 @@
       const val = parseInt(document.getElementById("input-intervalo").value, 10);
       intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
 
-      if (modo === "CATEGORIA") {
-        const checkboxes = document.querySelectorAll('input[name="cat-filtro"]:checked');
-        let selecionadas = [];
-        checkboxes.forEach(cb => {
-          if (categoriasBase[cb.value]) {
-            selecionadas.push(...categoriasBase[cb.value]);
-          }
-        });
-        if (selecionadas.length === 0) {
-          alert("Selecione pelo menos uma categoria!");
-          return;
-        }
-        palavrasDisponiveis = [...selecionadas];
-        document.getElementById("ciclo-bar-wrapper").style.display = "block";
-      } else if (modo === "TREINO") {
+      if (modo === "TREINO") {
         palavrasDisponiveis = [...palavrasOriginais];
         document.getElementById("ciclo-bar-wrapper").style.display = "block";
       } else {
@@ -746,9 +773,36 @@
       timerInicio = setTimeout(() => { sortear(); }, 2000);
     }
 
+    function iniciarModoCategoria(nomeCategoria, infinito) {
+      pararLimparTudo();
+      const val = parseInt(document.getElementById("input-intervalo").value, 10);
+      intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
+
+      categoriaSelecionada = categoriasBase[nomeCategoria] || [];
+      if (categoriaSelecionada.length === 0) return;
+
+      if (infinito) {
+        modoExecucao = "CATEGORIA_INFINITA";
+        document.getElementById("ciclo-bar-wrapper").style.display = "none";
+      } else {
+        modoExecucao = "CATEGORIA_FINITA";
+        palavrasDisponiveis = [...categoriaSelecionada];
+        document.getElementById("ciclo-bar-wrapper").style.display = "block";
+      }
+
+      palavraAtual = "";
+      document.getElementById("modal-overlay").style.display = "none";
+      obterContextoAudio();
+
+      document.getElementById("resultado").innerText = "INICIANDO";
+      document.getElementById("previo").innerText = "";
+      document.getElementById("categoria-atual-display").innerText = "";
+
+      timerInicio = setTimeout(() => { sortear(); }, 2000);
+    }
+
     document.getElementById("btn-modo-treino").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("TREINO"); });
     document.getElementById("btn-modo-aleatorio").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("ALEATORIO"); });
-    document.getElementById("btn-iniciar-categorias").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("CATEGORIA"); });
 
     // Gestos de toque longo (voltar ao menu) e Pinça (zoom)
     let distanciaInicialPinça = 0;
