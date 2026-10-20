@@ -24,7 +24,7 @@
       height: 100vh;
       height: 100dvh;
       margin: 0;
-      padding: 15px;
+      padding: 12px;
       box-sizing: border-box;
       user-select: none;
       cursor: pointer;
@@ -34,17 +34,22 @@
       overflow: hidden;
     }
 
-    /* Botão Fullscreen */
-    #btn-fullscreen {
+    /* Controles Fixos no Topo Direito */
+    .botoes-topo {
       position: fixed;
-      top: 15px;
-      right: 15px;
+      top: 12px;
+      right: 12px;
       z-index: 999;
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-topo {
       background: rgba(255, 255, 255, 0.08);
       border: 1px solid rgba(255, 255, 255, 0.15);
       border-radius: 50%;
-      width: 44px;
-      height: 44px;
+      width: 40px;
+      height: 40px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -52,13 +57,13 @@
       backdrop-filter: blur(5px);
       transition: all 0.2s ease;
     }
-    #btn-fullscreen:hover {
+    .btn-topo:hover {
       background: rgba(255, 255, 255, 0.15);
       transform: scale(1.05);
     }
-    #btn-fullscreen svg {
-      width: 22px;
-      height: 22px;
+    .btn-topo svg {
+      width: 20px;
+      height: 20px;
       fill: var(--text-main);
     }
 
@@ -73,28 +78,38 @@
     }
 
     #previo {
-      font-size: 3.5rem;
+      font-size: 2.8rem;
       font-weight: 600;
       color: var(--text-muted);
       text-align: center;
-      min-height: 1.2rem;
-      margin-bottom: 10px;
+      min-height: 1rem;
+      margin-bottom: 5px;
       opacity: 0.6;
-      transition: font-size 0.05s ease-out;
       text-transform: uppercase;
       letter-spacing: 2px;
     }
     #resultado {
-      font-size: 6.5rem;
+      font-size: 5.5rem;
       font-weight: 800;
       color: var(--text-main);
       text-align: center;
-      padding: 10px;
+      padding: 5px;
       line-height: 1.1;
       text-shadow: 0 4px 20px rgba(0, 184, 148, 0.25);
-      transition: font-size 0.05s ease-out;
       text-transform: uppercase;
       letter-spacing: 1px;
+    }
+
+    /* Exibição da Categoria na Tela Principal */
+    #categoria-atual-display {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      margin-top: 10px;
+      min-height: 1.5rem;
+      text-shadow: 0 2px 10px rgba(112, 161, 255, 0.3);
     }
 
     #barras-container {
@@ -102,15 +117,15 @@
       max-width: 500px;
       display: flex;
       flex-direction: column;
-      gap: 10px;
-      margin-bottom: 10px;
+      gap: 8px;
+      margin-bottom: 5px;
       flex-shrink: 0;
     }
     .bar-wrapper {
       width: 100%;
-      height: 14px;
+      height: 12px;
       background-color: rgba(255, 255, 255, 0.08);
-      border-radius: 7px;
+      border-radius: 6px;
       overflow: hidden;
       box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
     }
@@ -119,14 +134,14 @@
       height: 100%;
       background-color: var(--primary);
       transition: width 0.1s linear, background-color 0.1s linear;
-      border-radius: 7px;
+      border-radius: 6px;
     }
     #ciclo-bar {
       width: 100%;
       height: 100%;
       background-color: var(--accent);
       transition: width 0.3s ease;
-      border-radius: 7px;
+      border-radius: 6px;
     }
 
     /* Modal customizado */
@@ -136,45 +151,44 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(10, 12, 18, 0.85);
+      background: rgba(10, 12, 18, 0.88);
       backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      padding: 15px;
+      padding: 12px;
       box-sizing: border-box;
     }
     .modal-box {
       background: var(--card-bg);
-      padding: 24px;
+      padding: 20px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid rgba(255, 255, 255, 0.08);
       text-align: center;
-      max-width: 360px;
+      max-width: 340px;
       width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
+      box-sizing: border-box;
     }
     .modal-box h3 {
       margin-top: 0;
       color: var(--text-main);
-      font-size: 1.4rem;
-      margin-bottom: 15px;
+      font-size: 1.25rem;
+      margin-bottom: 12px;
     }
     .modal-box p {
       color: var(--text-muted);
-      font-size: 0.95rem;
-      margin-bottom: 8px;
+      font-size: 0.9rem;
+      margin-bottom: 6px;
       text-align: left;
     }
-    .modal-box input {
+    .modal-box input[type="number"] {
       width: 100%;
-      padding: 12px;
-      font-size: 1.1rem;
+      padding: 10px;
+      font-size: 1rem;
       box-sizing: border-box;
-      margin-bottom: 15px;
+      margin-bottom: 12px;
       text-align: center;
       background: rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -186,21 +200,18 @@
     .categorias-grid {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 6px;
-      margin-bottom: 15px;
-      max-height: 160px;
-      overflow-y: auto;
+      gap: 5px;
+      margin-bottom: 12px;
       text-align: left;
-      padding-right: 4px;
     }
     .categoria-item {
       display: flex;
       align-items: center;
       gap: 10px;
       background: rgba(0,0,0,0.15);
-      padding: 8px 10px;
+      padding: 7px 10px;
       border-radius: 6px;
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       cursor: pointer;
       color: var(--text-muted);
       border: 1px solid transparent;
@@ -223,8 +234,8 @@
     }
     .modal-box button {
       width: 100%;
-      padding: 12px;
-      font-size: 1rem;
+      padding: 11px;
+      font-size: 0.95rem;
       font-weight: 700;
       color: #12141c;
       background-color: var(--primary);
@@ -246,11 +257,11 @@
     /* Botao de fim de ciclo */
     #acoes-ciclo {
       display: none;
-      margin-top: 20px;
+      margin-top: 15px;
     }
     .btn-acao {
-      padding: 16px 48px;
-      font-size: 2rem;
+      padding: 14px 40px;
+      font-size: 1.8rem;
       font-weight: bold;
       color: #12141c;
       background-color: var(--primary);
@@ -263,47 +274,84 @@
       transform: scale(0.98);
     }
 
-    /* Ajustes específicos para Modo Paisagem / Telas Baixas */
+    /* Ajustes para Modo Paisagem / Telas Baixas */
     @media (max-height: 500px) {
       body {
-        padding: 5px;
+        padding: 4px;
       }
       #previo {
-        font-size: 2.2rem;
+        font-size: 2rem;
         margin-bottom: 2px;
       }
       #resultado {
-        font-size: 4rem;
+        font-size: 3.5rem;
         padding: 2px;
       }
+      #categoria-atual-display {
+        font-size: 1.1rem;
+        margin-top: 4px;
+      }
       #barras-container {
-        gap: 6px;
-        margin-bottom: 5px;
+        gap: 4px;
+        margin-bottom: 2px;
       }
       .bar-wrapper {
         height: 10px;
       }
-      #btn-fullscreen {
-        top: 8px;
-        right: 8px;
-        width: 36px;
-        height: 36px;
+      .modal-box {
+        padding: 12px;
+        max-width: 320px;
       }
-      #btn-fullscreen svg {
-        width: 18px;
-        height: 18px;
+      .modal-box h3 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+      }
+      .modal-box input[type="number"] {
+        padding: 6px;
+        margin-bottom: 8px;
+      }
+      .modal-box button {
+        padding: 8px;
+        font-size: 0.85rem;
+      }
+      .categoria-item {
+        padding: 5px 8px;
+        font-size: 0.8rem;
+      }
+      .btn-topo {
+        width: 34px;
+        height: 34px;
+      }
+      .btn-topo svg {
+        width: 16px;
+        height: 16px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Botão de Fullscreen -->
-  <button id="btn-fullscreen" title="Alternar Tela Cheia">
-    <svg viewBox="0 0 24 24">
-      <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
-    </svg>
-  </button>
+  <!-- Controles Fixos no Topo Direito -->
+  <div class="botoes-topo">
+    <!-- Botão Home -->
+    <button id="btn-home" class="btn-topo" title="Ir para Página Inicial">
+      <svg viewBox="0 0 24 24">
+        <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+      </svg>
+    </button>
+    <!-- Botão Rotação -->
+    <button id="btn-rotate" class="btn-topo" title="Bloquear/Desbloquear Rotação">
+      <svg viewBox="0 0 24 24">
+        <path d="M16.48 2.52c3.27 1.55 5.61 4.72 5.97 8.48h-2.02c-.34-3.04-2.52-5.52-5.46-6.42v-2.06m-8.96 17.96c-3.27-1.55-5.61-4.72-5.97-8.48h2.02c.34 3.04 2.52 5.52 5.46 6.42v2.06M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2m0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z"/>
+      </svg>
+    </button>
+    <!-- Botão Fullscreen -->
+    <button id="btn-fullscreen" class="btn-topo" title="Alternar Tela Cheia">
+      <svg viewBox="0 0 24 24">
+        <path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/>
+      </svg>
+    </button>
+  </div>
 
   <!-- Modal de Configuração -->
   <div id="modal-overlay">
@@ -312,15 +360,23 @@
       <p>Intervalo em segundos:</p>
       <input type="number" id="input-intervalo" value="10" min="1">
 
-      <p>Filtrar por Categorias:</p>
-      <div class="categorias-grid" id="categorias-container">
-        <!-- Preenchido via JavaScript -->
+      <!-- Visão Inicial do Menu com apenas 3 botões -->
+      <div id="menu-principal-botoes" class="modal-botoes-modo">
+        <button id="btn-modo-treino">SIMULADO CORDEL VERDE</button>
+        <button id="btn-modo-aleatorio" class="btn-secundario">MODO ALEATÓRIO (Infinito)</button>
+        <button id="btn-menu-categorias" class="btn-terciario">CATEGORIAS</button>
       </div>
 
-      <div class="modal-botoes-modo">
-        <button id="btn-modo-treino">MODO TREINO (Sequência)</button>
-        <button id="btn-modo-aleatorio" class="btn-secundario">MODO ALEATÓRIO (Infinito)</button>
-        <button id="btn-modo-categoria" class="btn-terciario">TREINAR CATEGORIAS SELECIONADAS</button>
+      <!-- Visão Secundária para Seleção de Categorias -->
+      <div id="menu-categorias-secao" style="display: none;">
+        <p>Selecione as Categorias:</p>
+        <div class="categorias-grid" id="categorias-container">
+          <!-- Preenchido via JavaScript -->
+        </div>
+        <div class="modal-botoes-modo">
+          <button id="btn-iniciar-categorias">INICIAR</button>
+          <button id="btn-voltar-menu" class="btn-secundario">VOLTAR</button>
+        </div>
       </div>
     </div>
   </div>
@@ -328,6 +384,7 @@
   <div id="conteudo-principal">
     <div id="previo"></div>
     <div id="resultado">CLIQUE PARA INICIAR</div>
+    <div id="categoria-atual-display"></div>
 
     <div id="acoes-ciclo">
       <button id="btn-mais-um" class="btn-acao">+1</button>
@@ -353,7 +410,14 @@
       "Acrobacias": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"]
     };
 
-    // Gera a lista completa de palavras originais combinando todas as categorias
+    // Mapeia cada movimento para a sua categoria correspondente
+    const mapaMovimentoCategoria = {};
+    Object.keys(categoriasBase).forEach(cat => {
+      categoriasBase[cat].forEach(mov => {
+        mapaMovimentoCategoria[mov] = cat;
+      });
+    });
+
     const palavrasOriginais = Object.values(categoriasBase).flat();
 
     let palavrasDisponiveis = [...palavrasOriginais];
@@ -375,7 +439,7 @@
     function renderizarCategoriasModal() {
       const container = document.getElementById("categorias-container");
       container.innerHTML = "";
-      Object.keys(categoriasBase).forEach((cat, index) => {
+      Object.keys(categoriasBase).forEach((cat) => {
         const label = document.createElement("label");
         label.className = "categoria-item";
         label.innerHTML = `
@@ -507,12 +571,21 @@
       }
     }
 
-    function exibirBotoesFimCiclo() {
+    function voltarTelaInicial() {
       pararLimparTudo();
+      palavraAtual = "";
+      palavrasDisponiveis = [...palavrasOriginais];
+
       document.getElementById("previo").innerText = "";
-      document.getElementById("resultado").innerText = "CICLO CONCLUÍDO";
+      document.getElementById("resultado").innerText = "CLIQUE PARA INICIAR";
+      document.getElementById("categoria-atual-display").innerText = "";
       document.getElementById("barras-container").style.visibility = "hidden";
-      document.getElementById("acoes-ciclo").style.display = "block";
+      document.getElementById("acoes-ciclo").style.display = "none";
+
+      // Reseta visualização do modal para o menu principal
+      document.getElementById("menu-principal-botoes").style.display = "flex";
+      document.getElementById("menu-categorias-secao").style.display = "none";
+      document.getElementById("modal-overlay").style.display = "flex";
     }
 
     function sortear() {
@@ -522,7 +595,7 @@
       if (modoExecucao === "TREINO" || modoExecucao === "CATEGORIA") {
         if (palavrasDisponiveis.length === 0) {
           tocarSomFimCiclo();
-          exibirBotoesFimCiclo();
+          voltarTelaInicial();
           return;
         } else {
           tocarSineta();
@@ -545,6 +618,7 @@
 
       palavraAtual = sorteada;
       document.getElementById("resultado").innerText = sorteada;
+      document.getElementById("categoria-atual-display").innerText = mapaMovimentoCategoria[sorteada] || "";
 
       tempoRestante = intervaloSegundos;
       atualizarBarras();
@@ -572,6 +646,33 @@
       }
     }
 
+    // Botão Home fixo
+    document.getElementById("btn-home").addEventListener("click", (e) => {
+      e.stopPropagation();
+      voltarTelaInicial();
+    });
+
+    // Botão de Rotação (Screen Orientation API)
+    document.getElementById("btn-rotate").addEventListener("click", async (e) => {
+      e.stopPropagation();
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          if (document.documentElement.classList.contains('rotated-landscape')) {
+            document.documentElement.classList.remove('rotated-landscape');
+            await screen.orientation.unlock();
+          } else {
+            document.documentElement.classList.add('rotated-landscape');
+            const target = (screen.orientation.type.includes('portrait')) ? 'landscape' : 'portrait';
+            await screen.orientation.lock(target);
+          }
+        } else {
+          alert("A API de rotação de tela não é suportada diretamente neste navegador.");
+        }
+      } catch (err) {
+        console.log("Erro ao rotacionar tela:", err);
+      }
+    });
+
     // Tela Cheia
     document.getElementById("btn-fullscreen").addEventListener("click", (e) => {
       e.stopPropagation();
@@ -589,7 +690,21 @@
       document.getElementById("acoes-ciclo").style.display = "none";
       document.getElementById("resultado").innerText = "INICIANDO";
       document.getElementById("previo").innerText = "";
+      document.getElementById("categoria-atual-display").innerText = "";
       timerInicio = setTimeout(() => { sortear(); }, 2000);
+    });
+
+    // Navegação do Modal de Categorias
+    document.getElementById("btn-menu-categorias").addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.getElementById("menu-principal-botoes").style.display = "none";
+      document.getElementById("menu-categorias-secao").style.display = "block";
+    });
+
+    document.getElementById("btn-voltar-menu").addEventListener("click", (e) => {
+      e.stopPropagation();
+      document.getElementById("menu-categorias-secao").style.display = "none";
+      document.getElementById("menu-principal-botoes").style.display = "flex";
     });
 
     // Configuração de Modos no Modal
@@ -626,13 +741,14 @@
 
       document.getElementById("resultado").innerText = "INICIANDO";
       document.getElementById("previo").innerText = "";
+      document.getElementById("categoria-atual-display").innerText = "";
 
       timerInicio = setTimeout(() => { sortear(); }, 2000);
     }
 
     document.getElementById("btn-modo-treino").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("TREINO"); });
     document.getElementById("btn-modo-aleatorio").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("ALEATORIO"); });
-    document.getElementById("btn-modo-categoria").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("CATEGORIA"); });
+    document.getElementById("btn-iniciar-categorias").addEventListener("click", (e) => { e.stopPropagation(); configurarEIniciar("CATEGORIA"); });
 
     // Gestos de toque longo (voltar ao menu) e Pinça (zoom)
     let distanciaInicialPinça = 0;
@@ -652,13 +768,7 @@
         if (timerLongPress !== null) clearTimeout(timerLongPress);
         timerLongPress = setTimeout(() => {
           foiLongPress = true;
-          pararLimparTudo();
-          palavraAtual = "";
-          document.getElementById("previo").innerText = "";
-          document.getElementById("resultado").innerText = "CLIQUE PARA INICIAR";
-          document.getElementById("barras-container").style.visibility = "hidden";
-          document.getElementById("acoes-ciclo").style.display = "none";
-          document.getElementById("modal-overlay").style.display = "flex";
+          voltarTelaInicial();
         }, 3000);
       } else if (e.touches.length === 2) {
         if (timerLongPress !== null) { clearTimeout(timerLongPress); timerLongPress = null; }
