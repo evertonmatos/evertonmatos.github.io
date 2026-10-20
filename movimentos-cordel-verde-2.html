@@ -567,8 +567,15 @@
         const mensagem = new SpeechSynthesisUtterance(textoParaVoz);
         mensagem.lang = 'pt-BR';
         mensagem.rate = 1.0;
-        mensagem.onend = () => { iniciarContador(); };
-        mensagem.onerror = () => { iniciarContador(); };
+
+        mensagem.onend = () => {
+          iniciarContador();
+        };
+
+        mensagem.onerror = () => {
+          iniciarContador();
+        };
+
         window.speechSynthesis.speak(mensagem);
       } else {
         iniciarContador();
@@ -650,9 +657,8 @@
       tempoRestante = intervaloSegundos;
       atualizarBarras();
 
-      timerVoz = setTimeout(() => {
-        lerTexto(sorteada);
-      }, 300);
+      // Chamada direta e imediata da voz para garantir funcionamento no Android
+      lerTexto(sorteada);
     }
 
     function tick() {
@@ -861,7 +867,6 @@
       if (document.getElementById("modal-overlay").style.display !== "none") return;
       if (document.getElementById("acoes-ciclo").style.display === "block") return;
 
-      // Evita avançar caso o clique tenha ocorrido em um botão ou controle
       if (e.target.closest('button') || e.target.closest('.botoes-topo')) return;
 
       pararLimparTudo();
