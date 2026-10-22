@@ -11,7 +11,6 @@
       --primary: #00b894;
       --primary-hover: #55efc4;
       --accent: #70a1ff;
-      --accent-hover: #91b5ff;
       --text-main: #f1f2f6;
       --text-muted: #a4b0be;
     }
@@ -164,33 +163,36 @@
     }
     .modal-box {
       background: var(--card-bg);
-      padding: 20px;
+      padding: 16px;
       border-radius: 16px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       border: 1px solid rgba(255, 255, 255, 0.08);
       text-align: center;
-      max-width: 380px;
+      max-width: 360px;
       width: 100%;
       box-sizing: border-box;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
     }
     .modal-box h3 {
       margin-top: 0;
       color: var(--text-main);
-      font-size: 1.25rem;
-      margin-bottom: 12px;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
     }
     .modal-box p {
       color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-bottom: 4px;
+      font-size: 0.8rem;
+      margin-bottom: 3px;
       text-align: left;
     }
     .modal-box input[type="number"] {
       width: 100%;
-      padding: 8px;
-      font-size: 0.95rem;
+      padding: 6px;
+      font-size: 0.9rem;
       box-sizing: border-box;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       text-align: center;
       background: rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -198,22 +200,50 @@
       border-radius: 8px;
     }
 
-    /* Lista de Modos com Botão Compacto Infinity (∞) */
-    .menu-lista-modos {
+    /* Seletor de Modo (Toggle no Topo) */
+    .toggle-container {
+      display: flex;
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 8px;
+      padding: 3px;
+      margin-bottom: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      flex-shrink: 0;
+    }
+    .toggle-btn {
+      flex: 1;
+      padding: 6px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: transparent;
+      color: var(--text-muted);
+      transition: all 0.2s ease;
+    }
+    .toggle-btn.ativo-normal {
+      background-color: var(--primary);
+      color: #12141c;
+    }
+    .toggle-btn.ativo-infinito {
+      background-color: var(--accent);
+      color: #12141c;
+    }
+
+    /* Lista de Categorias com Rolagem Interna */
+    .menu-lista-categorias {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 5px;
+      overflow-y: auto;
+      max-height: 240px;
+      padding-right: 2px;
     }
-    .linha-modo {
-      display: flex;
-      gap: 6px;
-      align-items: center;
+    .btn-categoria-item {
       width: 100%;
-    }
-    .btn-modo-principal {
-      flex: 1;
-      padding: 10px;
-      font-size: 0.82rem;
+      padding: 8px;
+      font-size: 0.78rem;
       font-weight: 700;
       color: #12141c;
       background-color: var(--primary);
@@ -222,32 +252,10 @@
       cursor: pointer;
       text-transform: uppercase;
       transition: transform 0.1s, background-color 0.2s;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-    .btn-modo-principal:active {
-      transform: scale(0.98);
-    }
-    .btn-modo-infinito {
-      width: 42px;
-      height: 36px;
       flex-shrink: 0;
-      font-size: 1.3rem;
-      font-weight: 800;
-      line-height: 1;
-      color: #12141c;
-      background-color: var(--accent);
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: transform 0.1s, background-color 0.2s;
     }
-    .btn-modo-infinito:active {
-      transform: scale(0.95);
+    .btn-categoria-item:active {
+      transform: scale(0.98);
     }
 
     /* Botao de fim de ciclo */
@@ -295,26 +303,32 @@
         height: 10px;
       }
       .modal-box {
-        padding: 10px;
-        max-width: 360px;
+        padding: 8px;
+        max-width: 340px;
+        max-height: 88vh;
       }
       .modal-box h3 {
-        font-size: 1rem;
-        margin-bottom: 6px;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
       }
       .modal-box input[type="number"] {
+        padding: 3px;
+        margin-bottom: 4px;
+        font-size: 0.8rem;
+      }
+      .toggle-container {
+        margin-bottom: 4px;
+      }
+      .toggle-btn {
         padding: 4px;
-        margin-bottom: 6px;
-        font-size: 0.85rem;
+        font-size: 0.68rem;
       }
-      .btn-modo-principal {
+      .menu-lista-categorias {
+        max-height: 150px;
+      }
+      .btn-categoria-item {
         padding: 6px;
-        font-size: 0.72rem;
-      }
-      .btn-modo-infinito {
-        width: 34px;
-        height: 28px;
-        font-size: 1.1rem;
+        font-size: 0.7rem;
       }
       .btn-topo {
         width: 34px;
@@ -358,7 +372,13 @@
       <p>Intervalo em segundos:</p>
       <input type="number" id="input-intervalo" value="10" min="1">
 
-      <div class="menu-lista-modos" id="menu-modos-container">
+      <!-- Interruptor / Seletor de Modo no Topo -->
+      <div class="toggle-container">
+        <button id="toggle-normal" class="toggle-btn ativo-normal">MODO NORMAL</button>
+        <button id="toggle-infinito" class="toggle-btn">MODO INFINITO</button>
+      </div>
+
+      <div class="menu-lista-categorias" id="menu-categorias-container">
         <!-- Preenchido via JavaScript -->
       </div>
     </div>
@@ -384,8 +404,10 @@
   </div>
 
   <script>
-    // Dicionário de Categorias estruturado com base na apostila
+    // Dicionário de Categorias estruturado com base na apostila + Modo Intensivo
     const categoriasBase = {
+      "CORDEL VERDE": ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL", "PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA", "MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA", "RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO", "AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"],
+      "INTENSIVO": ["NEGATIVA DE FUGA", "ARRASTÃO", "ESQUIVA LATERAL", "MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO", "AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"],
       "ESQUIVAS": ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL"],
       "MOVIMENTOS FRONTAIS": ["PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA"],
       "MOVIMENTOS LATERAIS": ["MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA"],
@@ -393,15 +415,16 @@
       "ACROBACIAS": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"]
     };
 
-    // Mapeia cada movimento para a sua categoria correspondente
+    // Mapeia cada movimento para a sua categoria principal correspondente (excluindo Cordel Verde/Intensivo para exibição limpa)
     const mapaMovimentoCategoria = {};
-    Object.keys(categoriasBase).forEach(cat => {
+    const subCategorias = ["ESQUIVAS", "MOVIMENTOS FRONTAIS", "MOVIMENTOS LATERAIS", "MOVIMENTOS DE GIRO", "ACROBACIAS"];
+    subCategorias.forEach(cat => {
       categoriasBase[cat].forEach(mov => {
         mapaMovimentoCategoria[mov] = cat;
       });
     });
 
-    const palavrasOriginais = Object.values(categoriasBase).flat();
+    const palavrasOriginais = [...categoriasBase["CORDEL VERDE"]];
 
     let palavrasDisponiveis = [...palavrasOriginais];
     let intervaloSegundos = 10;
@@ -415,50 +438,47 @@
     let palavraAtual = "";
 
     // Modos: "NORMAL", "INFINITO"
-    let modoExecucao = "NORMAL";
+    let tipoModoAtual = "NORMAL";
     let categoriaSelecionada = [];
     let audioCtx = null;
 
-    // Renderiza o menu compacto com botão principal e botão ícone ∞ ao lado
-    function renderizarMenuCompacto() {
-      const container = document.getElementById("menu-modos-container");
+    // Controle do Toggle no Topo
+    const btnToggleNormal = document.getElementById("toggle-normal");
+    const btnToggleInfinito = document.getElementById("toggle-infinito");
+
+    btnToggleNormal.addEventListener("click", (e) => {
+      e.stopPropagation();
+      tipoModoAtual = "NORMAL";
+      btnToggleNormal.className = "toggle-btn ativo-normal";
+      btnToggleInfinito.className = "toggle-btn";
+    });
+
+    btnToggleInfinito.addEventListener("click", (e) => {
+      e.stopPropagation();
+      tipoModoAtual = "INFINITO";
+      btnToggleInfinito.className = "toggle-btn ativo-infinito";
+      btnToggleNormal.className = "toggle-btn";
+    });
+
+    // Renderiza a lista de opções de treino no modal
+    function renderizarMenuCategorias() {
+      const container = document.getElementById("menu-categorias-container");
       container.innerHTML = "";
 
-      const listaOpcoes = [
-        { rotulo: "CORDEL VERDE", chaveCat: null },
-        ...Object.keys(categoriasBase).map(cat => ({ rotulo: cat, chaveCat: cat }))
-      ];
+      const listaOpcoes = Object.keys(categoriasBase);
 
-      listaOpcoes.forEach(item => {
-        const linha = document.createElement("div");
-        linha.className = "linha-modo";
-
-        // Botão Principal (Modo Normal / Finito)
-        const btnPrincipal = document.createElement("button");
-        btnPrincipal.className = "btn-modo-principal";
-        btnPrincipal.innerText = item.rotulo;
-        btnPrincipal.title = `Treino Normal (Ciclo) - ${item.rotulo}`;
-        btnPrincipal.addEventListener("click", (e) => {
+      listaOpcoes.forEach(cat => {
+        const btn = document.createElement("button");
+        btn.className = "btn-categoria-item";
+        btn.innerText = cat;
+        btn.addEventListener("click", (e) => {
           e.stopPropagation();
-          iniciarTreino("NORMAL", item.chaveCat);
+          iniciarTreino(tipoModoAtual, cat);
         });
-
-        // Botão Menor Ícone Infinito (Modo Infinito / Sem Repetição Seguidade)
-        const btnInfinito = document.createElement("button");
-        btnInfinito.className = "btn-modo-infinito";
-        btnInfinito.innerText = "∞";
-        btnInfinito.title = `Modo Infinito - ${item.rotulo}`;
-        btnInfinito.addEventListener("click", (e) => {
-          e.stopPropagation();
-          iniciarTreino("INFINITO", item.chaveCat);
-        });
-
-        linha.appendChild(btnPrincipal);
-        linha.appendChild(btnInfinito);
-        container.appendChild(linha);
+        container.appendChild(btn);
       });
     }
-    renderizarMenuCompacto();
+    renderizarMenuCategorias();
 
     function obterContextoAudio() {
       if (!audioCtx) {
@@ -582,7 +602,7 @@
       timeBar.style.width = porcentagemTempo + "%";
       timeBar.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
 
-      if (modoExecucao === "NORMAL") {
+      if (tipoModoAtual === "NORMAL") {
         const totalPalavras = categoriaSelecionada.length + 1;
         const restantes = palavrasDisponiveis.length + 1;
         const porcentagemCiclo = (restantes / totalPalavras) * 100;
@@ -607,7 +627,7 @@
       pararLimparTudo();
       let sorteada = "";
 
-      if (modoExecucao === "NORMAL") {
+      if (tipoModoAtual === "NORMAL") {
         if (palavrasDisponiveis.length === 0) {
           tocarSomFimCiclo();
           voltarTelaInicial();
@@ -721,7 +741,7 @@
     // Inicia a execução do treino conforme o tipo selecionado
     function iniciarTreino(tipoModo, nomeCategoria) {
       pararLimparTudo();
-      modoExecucao = tipoModo;
+      tipoModoAtual = tipoModo;
       const val = parseInt(document.getElementById("input-intervalo").value, 10);
       intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
 
@@ -731,7 +751,7 @@
         categoriaSelecionada = [...palavrasOriginais];
       }
 
-      if (modoExecucao === "NORMAL") {
+      if (tipoModoAtual === "NORMAL") {
         palavrasDisponiveis = [...categoriaSelecionada];
         document.getElementById("ciclo-bar-wrapper").style.display = "block";
       } else {
@@ -792,7 +812,7 @@
       if (timerLongPress !== null) { clearTimeout(timerLongPress); timerLongPress = null; }
       if (e.touches.length < 2) {
         distanciaInicialPinça = 0;
-        if (foiGestoPinca) setTimeout(() => { foiGestoPinca = false; }, 300);
+        if (foiGestoPinca) setTimeout(() => { foiGestrePinca = false; }, 300);
       }
     });
 
