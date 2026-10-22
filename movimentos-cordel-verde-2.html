@@ -172,25 +172,28 @@
       max-width: 380px;
       width: 100%;
       box-sizing: border-box;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
     }
     .modal-box h3 {
       margin-top: 0;
       color: var(--text-main);
-      font-size: 1.25rem;
-      margin-bottom: 12px;
+      font-size: 1.15rem;
+      margin-bottom: 8px;
     }
     .modal-box p {
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       margin-bottom: 4px;
       text-align: left;
     }
     .modal-box input[type="number"] {
       width: 100%;
-      padding: 8px;
-      font-size: 0.95rem;
+      padding: 7px;
+      font-size: 0.9rem;
       box-sizing: border-box;
-      margin-bottom: 12px;
+      margin-bottom: 8px;
       text-align: center;
       background: rgba(0, 0, 0, 0.2);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -198,22 +201,26 @@
       border-radius: 8px;
     }
 
-    /* Lista de Modos com Botão Compacto Infinity (∞) */
+    /* Lista de Modos com Botão Compacto Infinity (∞) e Rolagem Interna */
     .menu-lista-modos {
       display: flex;
       flex-direction: column;
-      gap: 7px;
+      gap: 6px;
+      overflow-y: auto;
+      max-height: 250px;
+      padding-right: 2px;
     }
     .linha-modo {
       display: flex;
       gap: 6px;
       align-items: center;
       width: 100%;
+      flex-shrink: 0;
     }
     .btn-modo-principal {
       flex: 1;
-      padding: 10px;
-      font-size: 0.82rem;
+      padding: 9px;
+      font-size: 0.8rem;
       font-weight: 700;
       color: #12141c;
       background-color: var(--primary);
@@ -230,10 +237,10 @@
       transform: scale(0.98);
     }
     .btn-modo-infinito {
-      width: 42px;
-      height: 36px;
+      width: 40px;
+      height: 34px;
       flex-shrink: 0;
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       font-weight: 800;
       line-height: 1;
       color: #12141c;
@@ -295,26 +302,30 @@
         height: 10px;
       }
       .modal-box {
-        padding: 10px;
+        padding: 8px;
         max-width: 360px;
+        max-height: 88vh;
       }
       .modal-box h3 {
-        font-size: 1rem;
-        margin-bottom: 6px;
+        font-size: 0.95rem;
+        margin-bottom: 4px;
       }
       .modal-box input[type="number"] {
         padding: 4px;
-        margin-bottom: 6px;
+        margin-bottom: 4px;
         font-size: 0.85rem;
+      }
+      .menu-lista-modos {
+        max-height: 150px;
       }
       .btn-modo-principal {
         padding: 6px;
-        font-size: 0.72rem;
+        font-size: 0.7rem;
       }
       .btn-modo-infinito {
         width: 34px;
         height: 28px;
-        font-size: 1.1rem;
+        font-size: 1rem;
       }
       .btn-topo {
         width: 34px;
@@ -384,24 +395,52 @@
   </div>
 
   <script>
-    // Dicionário de Categorias estruturado com base na apostila
+    // Dicionário de Categorias estruturado com base na apostila + Modo Intensivo
     const categoriasBase = {
       "ESQUIVAS": ["COCORINHA", "NEGATIVA", "NEGATIVA DE FUGA", "ARRASTÃO", "PAULISTINHA", "ESQUIVA FRONTAL", "ESQUIVA LATERAL"],
       "MOVIMENTOS FRONTAIS": ["PONTEIRA", "BENÇÃO", "MEIA LUA DE DENTRO", "MEIA LUA DE FORA"],
       "MOVIMENTOS LATERAIS": ["MARTELO", "MARTELO CRUZADO", "ESPORÃO", "QUEIXADA", "VINGATIVA"],
       "MOVIMENTOS DE GIRO": ["RABO DE ARRAIA", "MEIA LUA DE COMPASSO", "MEIA LUA DE ARMADA", "ESPORÃO DE COSTAS", "MARTELO DE GIRO"],
-      "ACROBACIAS": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"]
+      "ACROBACIAS": ["AU ABERTO", "AU FECHADO", "AU COM UMA MÃO", "AU CANIVETE", "CHAPÉU DE COURO", "QUEDA DE RINS"],
+      "INTENSIVO": [
+        "NEGATIVA DE FUGA",
+        "ARRASTÃO",
+        "ESQUIVA LATERAL",
+        "MARTELO",
+        "MARTELO CRUZADO",
+        "ESPORÃO",
+        "QUEIXADA",
+        "RABO DE ARRAIA",
+        "MEIA LUA DE COMPASSO",
+        "MEIA LUA DE ARMADA",
+        "ESPORÃO DE COSTAS",
+        "MARTELO DE GIRO",
+        "AU ABERTO",
+        "AU FECHADO",
+        "AU COM UMA MÃO",
+        "AU CANIVETE",
+        "CHAPÉU DE COURO",
+        "QUEDA DE RINS"
+      ]
     };
 
     // Mapeia cada movimento para a sua categoria correspondente
     const mapaMovimentoCategoria = {};
     Object.keys(categoriasBase).forEach(cat => {
-      categoriasBase[cat].forEach(mov => {
-        mapaMovimentoCategoria[mov] = cat;
-      });
+      if (cat !== "INTENSIVO") {
+        categoriasBase[cat].forEach(mov => {
+          mapaMovimentoCategoria[mov] = cat;
+        });
+      }
     });
 
-    const palavrasOriginais = Object.values(categoriasBase).flat();
+    const palavrasOriginais = Object.values({
+      "ESQUIVAS": categoriasBase["ESQUIVAS"],
+      "MOVIMENTOS FRONTAIS": categoriasBase["MOVIMENTOS FRONTAIS"],
+      "MOVIMENTOS LATERAIS": categoriasBase["MOVIMENTOS LATERAIS"],
+      "MOVIMENTOS DE GIRO": categoriasBase["MOVIMENTOS DE GIRO"],
+      "ACROBACIAS": categoriasBase["ACROBACIAS"]
+    }).flat();
 
     let palavrasDisponiveis = [...palavrasOriginais];
     let intervaloSegundos = 10;
@@ -558,7 +597,7 @@
         const mensagem = new SpeechSynthesisUtterance(textoParaVoz);
         mensagem.lang = 'pt-BR';
         mensagem.rate = 1.0;
-        
+
         mensagem.onend = () => {
           iniciarContador();
         };
@@ -577,7 +616,7 @@
       const proporcaoTempo = Math.max(tempoRestante / intervaloSegundos, 0);
       const porcentagemTempo = proporcaoTempo * 100;
       const hue = proporcaoTempo * 120;
-      
+
       const timeBar = document.getElementById("time-bar");
       timeBar.style.width = porcentagemTempo + "%";
       timeBar.style.backgroundColor = `hsl(${hue}, 80%, 50%)`;
@@ -725,7 +764,9 @@
       const val = parseInt(document.getElementById("input-intervalo").value, 10);
       intervaloSegundos = (!isNaN(val) && val > 0) ? val : 10;
 
-      if (nomeCategoria && categoriasBase[nomeCategoria]) {
+      if (nomeCategoria === "INTENSIVO") {
+        categoriaSelecionada = [...categoriasBase["INTENSIVO"]];
+      } else if (nomeCategoria && categoriasBase[nomeCategoria]) {
         categoriaSelecionada = [...categoriasBase[nomeCategoria]];
       } else {
         categoriaSelecionada = [...palavrasOriginais];
